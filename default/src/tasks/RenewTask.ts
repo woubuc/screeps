@@ -6,6 +6,10 @@ export class RenewTask extends Task {
 			return false;
 		}
 
+		if (this.creep.body.length < 4) {
+			return false;
+		}
+
 		return this.creep.ticksToLive < 200;
 	}
 

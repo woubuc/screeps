@@ -1,13 +1,14 @@
 import { Opaque } from 'type-fest';
-import { TaskConstructor } from './Task';
-import { BuildTask } from './Task.BuildTask';
-import { DefendTask } from './Task.DefendTask';
-import { HarvestEnergyTask } from './Task.HarvestEnergyTask';
-import { LoadEnergyTask } from './Task.LoadEnergyTask';
-import { RenewTask } from './Task.RenewTask';
-import { RoamTask } from './Task.RoamTask';
-import { StoreEnergyTask } from './Task.StoreEnergyTask';
-import { UpgradeTask } from './Task.UpgradeTask';
+import { TaskConstructor } from './tasks/Task';
+import { BuildTask } from './tasks/BuildTask';
+import { DefendTask } from './tasks/DefendTask';
+import { HarvestEnergyTask } from './tasks/HarvestEnergyTask';
+import { LoadEnergyTask } from './tasks/LoadEnergyTask';
+import { RenewTask } from './tasks/RenewTask';
+import { RepairTask } from './tasks/RepairTask';
+import { RoamTask } from './tasks/RoamTask';
+import { StoreEnergyTask } from './tasks/StoreEnergyTask';
+import { UpgradeTask } from './tasks/UpgradeTask';
 
 export type RoleId = Opaque<'role'>;
 
@@ -35,31 +36,31 @@ export class Role {
 export const Builder = new Role(
 	'builder',
 	'👷',
-	[RenewTask, BuildTask, LoadEnergyTask, HarvestEnergyTask],
-	[WORK, CARRY, MOVE],
-	1,
+	[RenewTask, RepairTask, BuildTask, LoadEnergyTask, HarvestEnergyTask],
+	[WORK, CARRY, MOVE, MOVE],
+	2,
 );
 
 export const Harvester = new Role(
 	'harvester',
 	'⛏️',
 	[RenewTask, HarvestEnergyTask, StoreEnergyTask],
-	[WORK, CARRY, MOVE],
-	5,
+	[WORK, WORK, WORK, CARRY, MOVE],
+	4,
 );
 
 export const Upgrader = new Role(
 	'upgrader',
 	'⏫',
 	[RenewTask, UpgradeTask, LoadEnergyTask, HarvestEnergyTask],
-	[WORK, CARRY, MOVE],
-	2,
+	[WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+	3,
 );
 
 export const Guard = new Role(
 	'guard',
 	'🛡️',
 	[DefendTask, RenewTask, RoamTask],
-	[ATTACK, MOVE, MOVE],
+	[ATTACK, ATTACK, MOVE, MOVE],
 	2,
 );

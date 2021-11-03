@@ -1,5 +1,5 @@
 import { Task } from './Task';
-import { isOneOf } from './utils';
+import { isOneOf } from '../utils';
 
 export class StoreEnergyTask extends Task {
 	public shouldStart(): boolean {
@@ -30,7 +30,7 @@ export class StoreEnergyTask extends Task {
 			.pos
 			.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: (s) =>
-					isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION)
+					isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER)
 					&& (s as StructureStorage).store.getFreeCapacity(RESOURCE_ENERGY)! > 0,
 			});
 	}

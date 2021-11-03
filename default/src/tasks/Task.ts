@@ -1,5 +1,5 @@
 import type { Constructor } from 'type-fest';
-import type { TaskRunner } from './TaskRunner';
+import type { TaskRunner } from '../TaskRunner';
 
 export type TaskConstructor = Constructor<Task, [TaskRunner, Creep]>;
 

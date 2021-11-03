@@ -1,5 +1,5 @@
 import { Role } from './Role';
-import type { Task, TaskConstructor } from './Task';
+import type { Task, TaskConstructor } from './tasks/Task';
 
 export class TaskRunner {
 	public static runFor(creep: Creep): void {

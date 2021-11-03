@@ -1,5 +1,5 @@
 import { Task } from './Task';
-import { isOneOf } from './utils';
+import { isOneOf } from '../utils';
 
 export class LoadEnergyTask extends Task {
 	public shouldStart(): boolean {

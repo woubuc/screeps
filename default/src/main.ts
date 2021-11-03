@@ -20,6 +20,22 @@ module.exports.loop = function () {
 	for (let creep of Object.values(Game.creeps)) {
 		TaskRunner.runFor(creep);
 	}
+
+	for (let room of Object.values(Game.rooms)) {
+		let towers: StructureTower[] = room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER });
+		for (let tower of towers) {
+			let target = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: s => s.hits < s.hitsMax });
+			if (target != null) {
+				tower.repair(target);
+				continue;
+			}
+
+			let enemy = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+			if (enemy != null) {
+				tower.attack(enemy);
+			}
+		}
+	}
 };
 
 function cleanupReservations() {
