@@ -1,12 +1,12 @@
-import { Task } from './Task';
+import Task from './Task';
 
-export class RoamTask extends Task {
+export default class RoamTask extends Task {
 	public shouldStart(): boolean {
 		return true;
 	}
 
 	public run(): void {
-		this.creep.move(this.getRandomDirection());
+		this.worker.creep.move(this.getRandomDirection());
 		this.nextTask();
 	}
 

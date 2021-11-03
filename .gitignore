@@ -1,7 +1,8 @@
 /.idea
 /node_modules
 
-default/*.js
+*.js
+!build.js
 
 *.log
 

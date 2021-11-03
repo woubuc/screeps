@@ -12,6 +12,11 @@
   resolved "https://registry.yarnpkg.com/@types/screeps/-/screeps-3.2.4.tgz#7a52d57c920e16f52f853cf4c55a1f603457c78d"
   integrity sha512-itlqAHdAZ2ZkDFERy3TkmmMIisSXT7tXfEnhhl5N7xNZbNmNs/qgGfCIRchPLIFj0w5EPpj6JurKZ3vpSxaNiQ==
 
+"@woubuc/multimap@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@woubuc/multimap/-/multimap-2.0.1.tgz#142fec5edadee4462be1fd9b3772825f155284c5"
+  integrity sha512-/VNOzpKELt8ktmY7L3ps9HumyflXO4c6igzNboaB7n/Rcg9bQbFNYkETrjRt2PsefgzSo13ILJmT+NpZzWZZ1w==
+
 esbuild-android-arm64@0.13.12:
   version "0.13.12"
   resolved "https://registry.yarnpkg.com/esbuild-android-arm64/-/esbuild-android-arm64-0.13.12.tgz#e1f199dc05405cdc6670c00fb6c793822bf8ae4c"

@@ -1,4 +1,4 @@
-import { Task } from './Task';
+import Task from './Task';
 
 let reservations: Map<Id<Source>, Id<Creep>[]> | null = null;
 
@@ -34,15 +34,15 @@ function updateReservationLabels() {
 	}
 }
 
-export class HarvestEnergyTask extends Task {
+export default class HarvestEnergyTask extends Task {
 
 	public shouldStart(): boolean {
-		return this.creep.store[RESOURCE_ENERGY] === 0
-			&& this.creep.room.find(FIND_SOURCES_ACTIVE).length > 0;
+		return this.worker.creep.store[RESOURCE_ENERGY] === 0
+			&& this.worker.creep.room.find(FIND_SOURCES_ACTIVE).length > 0;
 	}
 
 	public onStart(): void {
-		this.creep.say('🔋 Harvest');
+		this.worker.creep.say('🔋 Harvest');
 	}
 
 	public run(): void {
@@ -51,18 +51,18 @@ export class HarvestEnergyTask extends Task {
 			return this.nextTask();
 		}
 
-		if (this.creep.harvest(target) === ERR_NOT_IN_RANGE) {
-			this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
+		if (this.worker.creep.harvest(target) === ERR_NOT_IN_RANGE) {
+			this.worker.creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
 		}
 
-		if (this.creep.store.getFreeCapacity() === 0) {
+		if (this.worker.creep.store.getFreeCapacity() === 0) {
 			this.unreserveSource(target);
 			return this.nextTask();
 		}
 	}
 
 	private getReservedSource(): Source | undefined {
-		let reservedId = this.creep.memory.reservedSourceId;
+		let reservedId = this.worker.creep.memory.reservedSourceId;
 
 		if (reservedId == undefined) {
 			let source = this.findSource();
@@ -80,7 +80,7 @@ export class HarvestEnergyTask extends Task {
 	}
 
 	private findSource(): Source | null {
-		return this.creep
+		return this.worker.creep
 			.pos
 			.findClosestByPath(FIND_SOURCES_ACTIVE, {
 				filter: (s) => !this.isReserved(s),
@@ -107,23 +107,23 @@ export class HarvestEnergyTask extends Task {
 	}
 
 	private reserveSource(source: Source) {
-		this.creep.memory.reservedSourceId = source.id;
+		this.worker.creep.memory.reservedSourceId = source.id;
 
 		let reservations = getReservations();
 		let res = reservations.get(source.id) ?? [];
-		if (res.indexOf(this.creep.id) === -1) {
-			res.push(this.creep.id);
+		if (res.indexOf(this.worker.creep.id) === -1) {
+			res.push(this.worker.creep.id);
 			reservations.set(source.id, res);
 		}
 		updateReservationLabels();
 	}
 
 	private unreserveSource(source: Source) {
-		this.creep.memory.reservedSourceId = undefined;
+		this.worker.creep.memory.reservedSourceId = undefined;
 
 		let reservations = getReservations();
 		let res = reservations.get(source.id) ?? [];
-		let index = res.indexOf(this.creep.id);
+		let index = res.indexOf(this.worker.creep.id);
 		if (index > -1) {
 			res.splice(index, 1);
 			reservations.set(source.id, res);

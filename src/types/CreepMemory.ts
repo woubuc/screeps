@@ -1,4 +1,4 @@
-import { RoleId } from '../Role';
+import { RoleId } from '../roles/Role';
 
 declare global {
 	interface CreepMemory {
@@ -6,6 +6,6 @@ declare global {
 		currentTask?: string;
 
 		reservedSourceId?: Id<Source>;
-		roamTo?: RoomPosition;
+		targetRoom?: string;
 	}
 }

@@ -1,18 +1,10 @@
-import { Role, RoleId } from './Role';
+import Role, { RoleId } from './roles/Role';
+import WorkerService from './service/WorkerService';
 import { ucFirst } from './utils';
 
 export class SpawnManager {
 
-	private readonly roleCounts: Map<RoleId, number>;
-
-	public constructor() {
-		this.roleCounts = new Map();
-
-		for (let creep of Object.values(Game.creeps)) {
-			let count = this.roleCounts.get(creep.memory.role) ?? 0;
-			this.roleCounts.set(creep.memory.role, count + 1);
-		}
-	}
+	public constructor(private readonly workerService: WorkerService) {}
 
 	public trySpawnRoles(...roles: Role[]) {
 		for (let role of roles) {
@@ -25,7 +17,7 @@ export class SpawnManager {
 			if (spawn.spawning != null) {
 				let spawningCreep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
-					`🛠️ ${ ucFirst(spawningCreep.memory.role) }`,
+					`🛠️ ${ spawningCreep.memory.role }`,
 					spawn.pos.x + 1,
 					spawn.pos.y,
 					{ align: 'left', opacity: 0.5 },
@@ -33,15 +25,15 @@ export class SpawnManager {
 			}
 
 			let offset = 2;
-			for (let [role, count] of this.roleCounts.entries()) {
+			for (let [role, workers] of this.workerService.workersByRole.entries()) {
 				spawn.room.visual.text(
-					`${ count } ${ Role.get(role).icon } `,
+					`${ workers.size } ${ role?.icon } `,
 					spawn.pos.x,
 					spawn.pos.y - offset,
 					{ align: 'right', opacity: 0.5 },
 				);
 				spawn.room.visual.text(
-					ucFirst(role),
+					role?.id ?? '',
 					spawn.pos.x,
 					spawn.pos.y - offset,
 					{ align: 'left', opacity: 0.4 },
@@ -52,7 +44,7 @@ export class SpawnManager {
 	}
 
 	private trySpawnRole(role: Role): boolean {
-		let count = this.roleCounts.get(role.id) ?? 0;
+		let count = this.workerService.workersByRole.get(role).size;
 		let needToSpawn = role.desiredCount - count;
 		if (needToSpawn <= 0) {
 			return true;
@@ -77,8 +69,8 @@ export class SpawnManager {
 				continue;
 			}
 
-			let name = `${ ucFirst(role.id) } #${ Game.time }`;
-			let result = spawn.spawnCreep(role.parts, name, {
+			let name = `${ role.id } #${ Game.time }`;
+			let result = spawn.spawnCreep(role.body, name, {
 				memory: { role: role.id },
 			});
 
