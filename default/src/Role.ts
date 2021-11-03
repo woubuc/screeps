@@ -1,13 +1,16 @@
 import { Opaque } from 'type-fest';
-import { TaskConstructor } from './tasks/Task';
 import { BuildTask } from './tasks/BuildTask';
 import { DefendTask } from './tasks/DefendTask';
 import { HarvestEnergyTask } from './tasks/HarvestEnergyTask';
+import { LoadEnergyFromFullestTask } from './tasks/LoadEnergyFromFullestTask';
 import { LoadEnergyTask } from './tasks/LoadEnergyTask';
 import { RenewTask } from './tasks/RenewTask';
 import { RepairTask } from './tasks/RepairTask';
 import { RoamTask } from './tasks/RoamTask';
+import { StoreEnergyInSpawnTask } from './tasks/StoreEnergyInSpawnTask';
+import { StoreEnergyInTowerTask } from './tasks/StoreEnergyInTowerTask';
 import { StoreEnergyTask } from './tasks/StoreEnergyTask';
+import { TaskConstructor } from './tasks/Task';
 import { UpgradeTask } from './tasks/UpgradeTask';
 
 export type RoleId = Opaque<'role'>;
@@ -62,5 +65,13 @@ export const Guard = new Role(
 	'🛡️',
 	[DefendTask, RenewTask, RoamTask],
 	[ATTACK, ATTACK, MOVE, MOVE],
+	2,
+);
+
+export const Hauler = new Role(
+	'hauler',
+	'📦',
+	[RenewTask, StoreEnergyInSpawnTask, StoreEnergyInTowerTask, LoadEnergyFromFullestTask],
+	[CARRY, CARRY, MOVE, MOVE, MOVE],
 	2,
 );

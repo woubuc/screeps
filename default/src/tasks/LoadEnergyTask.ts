@@ -3,7 +3,7 @@ import { isOneOf } from '../utils';
 
 export class LoadEnergyTask extends Task {
 	public shouldStart(): boolean {
-		return this.findNonEmptyEnergyStorage() != undefined;
+		return this.findEnergyStorage() != undefined;
 	}
 
 	public onStart(): void {
@@ -11,7 +11,7 @@ export class LoadEnergyTask extends Task {
 	}
 
 	public run(): void {
-		let target = this.findNonEmptyEnergyStorage();
+		let target = this.findEnergyStorage();
 		if (target == undefined) {
 			return this.nextTask();
 		}
@@ -25,7 +25,7 @@ export class LoadEnergyTask extends Task {
 		}
 	}
 
-	private findNonEmptyEnergyStorage(): StructureStorage | null {
+	protected findEnergyStorage(): StructureStorage | null {
 		return this.creep
 			.pos
 			.findClosestByPath(FIND_MY_STRUCTURES, {

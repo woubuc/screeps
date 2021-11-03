@@ -25,7 +25,7 @@ export class StoreEnergyTask extends Task {
 		}
 	}
 
-	private findStorageStructure(): Structure | null {
+	protected findStorageStructure(): Structure | null {
 		return this.creep
 			.pos
 			.findClosestByPath(FIND_MY_STRUCTURES, {

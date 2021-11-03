@@ -1,4 +1,4 @@
-import { Builder, Guard, Harvester, Upgrader } from './Role';
+import { Builder, Guard, Harvester, Hauler, Upgrader } from './Role';
 import { SpawnManager } from './SpawnManager';
 import { TaskRunner } from './TaskRunner';
 
@@ -15,7 +15,7 @@ module.exports.loop = function () {
 
 	let spawn = new SpawnManager();
 
-	spawn.trySpawnRoles(Harvester, Upgrader, Builder, Guard);
+	spawn.trySpawnRoles(Harvester, Upgrader, Builder, Guard, Hauler);
 
 	for (let creep of Object.values(Game.creeps)) {
 		TaskRunner.runFor(creep);
