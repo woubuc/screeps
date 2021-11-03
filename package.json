@@ -1,0 +1,15 @@
+{
+  "name": "screeps_krgamestudios_com___21025",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "@types/screeps": "^3.2.4",
+    "type-fest": "^2.5.2",
+    "typescript": "^4.4.4"
+  }
+}
