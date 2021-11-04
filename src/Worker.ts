@@ -1,7 +1,8 @@
 import BuilderRole from './roles/BuilderRole';
 import GuardRole from './roles/GuardRole';
 import HarvesterRole from './roles/HarvesterRole';
-import HaulerRole from './roles/HaulerRole';
+import EnergyHaulerRole from './roles/EnergyHaulerRole';
+import LocalEnergyHaulerRole from './roles/LocalEnergyHaulerRole';
 import Role, { RoleId } from './roles/Role';
 import UnknownRole from './roles/UnknownRole';
 import UpgraderRole from './roles/UpgraderRole';
@@ -35,7 +36,12 @@ export default class Worker {
 	public moveTo(target: RoomPosition | { pos: RoomPosition }, cache: boolean = true) {
 		this.creep.moveTo(target, {
 			reusePath: cache ? 25 : 5,
-			visualizePathStyle: { stroke: '#FEF08A', opacity: 0.5 },
+			visualizePathStyle: {
+				lineStyle: 'dotted',
+				stroke: '#A5F3FC',
+				strokeWidth: 0.1,
+				opacity: 0.35,
+			},
 		});
 	}
 }
@@ -48,10 +54,12 @@ function getRole(id: RoleId): Role {
 			return GuardRole;
 		case HarvesterRole.id:
 			return HarvesterRole;
-		case HaulerRole.id:
-			return HaulerRole;
+		case EnergyHaulerRole.id:
+			return EnergyHaulerRole;
 		case UpgraderRole.id:
 			return UpgraderRole;
+		case LocalEnergyHaulerRole.id:
+			return LocalEnergyHaulerRole;
 	}
 
 	console.log('WARN [Worker] Unknown role:', id);

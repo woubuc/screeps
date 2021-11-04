@@ -1,11 +1,11 @@
 import Task from './Task';
 
 export default class RoamTask extends Task {
-	public shouldStart(): boolean {
+	public override shouldStart(): boolean {
 		return true;
 	}
 
-	public run(): void {
+	public override run(): void {
 		this.worker.creep.move(this.getRandomDirection());
 		this.nextTask();
 	}

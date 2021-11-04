@@ -1,12 +1,13 @@
 import type { Constructor } from 'type-fest';
+import State from '../State';
 import type { TaskRunner } from '../TaskRunner';
 import Worker from '../Worker';
 
-export type TaskConstructor = Constructor<Task, [TaskRunner, Worker]>;
+export type TaskConstructor = Constructor<Task, [State, Worker]>;
 
 export default abstract class Task {
 	public constructor(
-		protected readonly taskRunner: TaskRunner,
+		protected readonly state: State,
 		protected readonly worker: Worker,
 	) {}
 
@@ -28,12 +29,17 @@ export default abstract class Task {
 	public onEnd(): void {}
 
 	/**
-	 * Runs the task
+	 * Called when the task runs
 	 */
 	public abstract run(): void;
 
 
+	/** @final */
+	public invoke(): void {
+		this.run();
+	}
+
 	protected nextTask() {
-		this.taskRunner.nextTaskFor(this.worker);
+		this.state.taskRunner.nextTaskFor(this.worker);
 	}
 }

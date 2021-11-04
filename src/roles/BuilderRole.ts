@@ -1,18 +1,17 @@
+import BuildImportantBuildingsTask from '../tasks/BuildImportantBuildingsTask';
 import BuildTask from '../tasks/BuildTask';
 import LoadEnergyTask from '../tasks/LoadEnergyTask';
 import PickupEnergyTask from '../tasks/PickupEnergyTask';
 import RenewTask from '../tasks/RenewTask';
 import RepairTask from '../tasks/RepairTask';
-import ReturnToSpawnTask from '../tasks/ReturnToSpawnTask';
+import RoamTask from '../tasks/RoamTask';
 import Role from './Role';
 
 class BuilderRole extends Role {
 	public readonly icon = '👷';
 
-	public readonly body = [WORK, WORK, CARRY, MOVE, MOVE];
-	public readonly tasks = [RenewTask, RepairTask, BuildTask, PickupEnergyTask, LoadEnergyTask];
-
-	public readonly desiredCount = 1;
+	public readonly body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+	public readonly tasks = [RenewTask, BuildImportantBuildingsTask, RepairTask, BuildTask, PickupEnergyTask, LoadEnergyTask, RoamTask];
 }
 
 export default new BuilderRole();

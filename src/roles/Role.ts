@@ -12,6 +12,4 @@ export default abstract class Role {
 
 	public abstract readonly tasks: TaskConstructor[];
 	public abstract readonly body: BodyPartConstant[];
-
-	public abstract readonly desiredCount: number;
 }

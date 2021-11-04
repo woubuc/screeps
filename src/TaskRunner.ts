@@ -1,18 +1,18 @@
+import State from './State';
 import Task, { TaskConstructor } from './tasks/Task';
 import Worker from './Worker';
 
 export class TaskRunner {
-	public static runFor(worker: Worker): void {
-		this.get().runFor(worker);
-	}
+	public constructor(private readonly state: State) {}
 
-	private static instance?: TaskRunner;
+	public run(): void {
+		for (let worker of this.state.workers.all()) {
+			if (worker.creep.spawning) {
+				continue;
+			}
 
-	private static get(): TaskRunner {
-		if (this.instance == undefined) {
-			this.instance = new TaskRunner();
+			this.runFor(worker);
 		}
-		return this.instance;
 	}
 
 	public runFor(worker: Worker): void {
@@ -28,16 +28,16 @@ export class TaskRunner {
 				return;
 			}
 
-			instance = new CurrentTask(this, worker);
+			instance = new CurrentTask(this.state, worker);
 			instance.onStart();
 			console.log(`[Task] ${ worker.creep.memory.role }: start ${ CurrentTask.name }`);
 		} else {
-			instance = new CurrentTask(this, worker);
+			instance = new CurrentTask(this.state, worker);
 			// console.log(`[Task] ${ worker.creep.memory.role }: run ${ CurrentTask.name }`);
 		}
 
 
-		instance.run();
+		instance.invoke();
 	}
 
 	public getCurrentTaskFor(worker: Worker): TaskConstructor | undefined {
@@ -52,7 +52,7 @@ export class TaskRunner {
 	public clearTaskFor(worker: Worker): void {
 		let Task = this.getCurrentTaskFor(worker);
 		if (Task != undefined) {
-			new Task(this, worker).onEnd();
+			new Task(this.state, worker).onEnd();
 		}
 
 		delete worker.creep.memory.currentTask;
@@ -66,7 +66,7 @@ export class TaskRunner {
 		this.clearTaskFor(worker);
 
 		for (let TaskClass of worker.role.tasks) {
-			let instance = new TaskClass(this, worker);
+			let instance = new TaskClass(this.state, worker);
 			if (instance.shouldStart()) {
 				this.setTaskFor(worker, TaskClass);
 				return TaskClass;

@@ -8,8 +8,6 @@ class GuardRole extends Role {
 
 	public readonly body = [ATTACK, ATTACK, MOVE, MOVE];
 	public readonly tasks = [DefendTask, RenewTask, RoamTask];
-
-	public readonly desiredCount: number = 1;
 }
 
 export default new GuardRole();

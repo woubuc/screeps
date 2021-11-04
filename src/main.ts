@@ -1,23 +1,20 @@
 import BuilderRole from './roles/BuilderRole';
-import GuardRole from './roles/GuardRole';
-import HarvesterRole from './roles/HarvesterRole';
-import HaulerRole from './roles/HaulerRole';
+import EnergyHaulerRole from './roles/EnergyHaulerRole';
 import UpgraderRole from './roles/UpgraderRole';
-import WorkerService from './service/WorkerService';
-import { SpawnManager } from './SpawnManager';
-import { TaskRunner } from './TaskRunner';
+import State from './State';
 
 module.exports.loop = function () {
 
-	let workerService = new WorkerService();
-	let spawnManager = new SpawnManager(workerService);
+	let state = new State();
 
-	spawnManager.trySpawnRoles(HarvesterRole, HaulerRole, UpgraderRole, BuilderRole, GuardRole);
+	state.beforeTick();
+	state.taskRunner.run();
 
-	for (let worker of workerService.workers) {
-		TaskRunner.runFor(worker);
-	}
+	state.spawns.requireRole(UpgraderRole, 3);
+	state.spawns.requireRole(BuilderRole, 2);
+	state.spawns.requireRole(EnergyHaulerRole, Object.keys(Game.rooms).length);
 
+	// TODO figure out what to do about tower
 	for (let room of Object.values(Game.rooms)) {
 		let towers: StructureTower[] = room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER });
 		for (let tower of towers) {
@@ -33,6 +30,8 @@ module.exports.loop = function () {
 			}
 		}
 	}
+
+	state.afterTick();
 
 	cleanupMemory();
 };

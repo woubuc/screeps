@@ -2,22 +2,22 @@ import Task from './Task';
 import { isOneOf } from '../utils';
 
 export default class LoadEnergyTask extends Task {
-	public shouldStart(): boolean {
+	public override shouldStart(): boolean {
 		return this.findEnergyStorage() != undefined;
 	}
 
-	public onStart(): void {
+	public override onStart(): void {
 		this.worker.creep.say('🔋 Load');
 	}
 
-	public run(): void {
+	public override run(): void {
 		let target = this.findEnergyStorage();
 		if (target == undefined) {
 			return this.nextTask();
 		}
 
 		if (this.worker.creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-			this.worker.creep.moveTo(target, { visualizePathStyle: { stroke: '#FDE68A' } });
+			this.worker.moveTo(target);
 		}
 
 		if (this.worker.creep.store.getFreeCapacity() === 0 || target.store[RESOURCE_ENERGY] === 0) {

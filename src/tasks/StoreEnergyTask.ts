@@ -2,15 +2,15 @@ import Task from './Task';
 import { isOneOf } from '../utils';
 
 export default class StoreEnergyTask extends Task {
-	public shouldStart(): boolean {
-		return this.worker.creep.store[RESOURCE_ENERGY] > 0;
+	public override shouldStart(): boolean {
+		return this.worker.creep.store[RESOURCE_ENERGY] > 0 && this.findStorageStructure() != null;
 	}
 
-	public onStart(): void {
+	public override onStart(): void {
 		this.worker.creep.say('🔋 Store');
 	}
 
-	public run(): void {
+	public override run(): void {
 		let target = this.findStorageStructure();
 		if (target == null) {
 			return this.nextTask();

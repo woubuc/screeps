@@ -1,4 +1,5 @@
 import { RoleId } from '../roles/Role';
+import { Harvestable } from '../service/HarvestableService';
 
 declare global {
 	interface CreepMemory {
@@ -7,5 +8,9 @@ declare global {
 
 		reservedSourceId?: Id<Source>;
 		targetRoom?: string;
+		taskTarget?: RoomPosition;
+		taskCountdown?: number;
+
+		harvestable?: Id<Harvestable>;
 	}
 }
