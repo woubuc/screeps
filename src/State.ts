@@ -14,6 +14,7 @@ export default class State {
 	public readonly workers = new WorkerService(this);
 
 	public readonly taskRunner = new TaskRunner(this);
+	public readonly username = Game.spawns['Spawn1'].owner.username;
 
 	public constructor() {
 		this.workers.onInit();
