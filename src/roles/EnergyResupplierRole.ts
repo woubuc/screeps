@@ -12,6 +12,7 @@ import Role from './Role';
  */
 class EnergyResupplierRole extends Role {
 	public readonly icon = '📦';
+	public readonly colour = '#BEF264';
 
 	public readonly body = [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
 	public readonly tasks = [

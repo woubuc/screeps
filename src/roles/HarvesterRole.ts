@@ -7,6 +7,7 @@ import Role from './Role';
  */
 class HarvesterRole extends Role {
 	public readonly icon = '⛏️';
+	public readonly colour = '#6EE7B7';
 
 	public readonly body = [WORK, WORK, WORK, MOVE];
 	public readonly tasks = [HarvestTask, StoreEnergyTask];

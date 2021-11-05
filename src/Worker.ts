@@ -3,9 +3,11 @@ import EnergyHaulerRole from './roles/EnergyResupplierRole';
 import GuardRole from './roles/GuardRole';
 import HarvesterRole from './roles/HarvesterRole';
 import LocalEnergyHaulerRole from './roles/EnergyHaulerRole';
+import RoadBuilderRole from './roles/RoadBuilderRole';
 import Role, { RoleId } from './roles/Role';
 import UnknownRole from './roles/UnknownRole';
 import UpgraderRole from './roles/UpgraderRole';
+import { shuffle } from './utils';
 
 export default class Worker {
 
@@ -40,7 +42,7 @@ export default class Worker {
 			reusePath: cache ? 25 : 5,
 			visualizePathStyle: {
 				lineStyle: 'dotted',
-				stroke: '#A5F3FC',
+				stroke: this.role.colour,
 				strokeWidth: 0.1,
 				opacity: 0.35,
 			},
@@ -79,12 +81,21 @@ export default class Worker {
 				return found[0];
 			}
 
-			let adjacentRooms = Game.map.describeExits(name);
-			for (let name of Object.values(adjacentRooms)) {
-				if (!visitedRooms.includes(name)) {
-					tryRooms.push(name);
+			let adjacentRooms = Object.values(Game.map.describeExits(name));
+			let addRoomNames: string[] = [];
+			for (let room of adjacentRooms) {
+				if (visitedRooms.includes(room)) {
+					continue;
 				}
+
+				if (tryRooms.includes(room)) {
+					continue;
+				}
+
+				addRoomNames.push(room);
 			}
+
+			tryRooms.push(...shuffle(addRoomNames));
 		}
 
 		return null;
@@ -93,18 +104,13 @@ export default class Worker {
 
 function getRole(id: RoleId): Role {
 	switch (id) {
-		case BuilderRole.id:
-			return BuilderRole;
-		case GuardRole.id:
-			return GuardRole;
-		case HarvesterRole.id:
-			return HarvesterRole;
-		case EnergyHaulerRole.id:
-			return EnergyHaulerRole;
-		case UpgraderRole.id:
-			return UpgraderRole;
-		case LocalEnergyHaulerRole.id:
-			return LocalEnergyHaulerRole;
+		case BuilderRole.id: return BuilderRole;
+		case EnergyHaulerRole.id: return EnergyHaulerRole;
+		case GuardRole.id: return GuardRole;
+		case HarvesterRole.id: return HarvesterRole;
+		case LocalEnergyHaulerRole.id: return LocalEnergyHaulerRole;
+		case RoadBuilderRole.id: return RoadBuilderRole;
+		case UpgraderRole.id: return UpgraderRole;
 	}
 
 	console.log('WARN [Worker] Unknown role:', id);

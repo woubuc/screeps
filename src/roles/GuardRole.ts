@@ -9,6 +9,7 @@ import Role from './Role';
  */
 class GuardRole extends Role {
 	public readonly icon = '🛡️';
+	public readonly colour = '#FCA5A5';
 
 	public readonly body = [ATTACK, ATTACK, MOVE, MOVE];
 	public readonly tasks = [DefendTask, RenewTask, StationInRoomTask, RoamTask];

@@ -7,19 +7,10 @@ export default class StoreEnergyTask extends TargetingTask<Target> {
 	public override readonly say = '🔋 Store';
 
 	public override shouldStart(): boolean {
-		if (!super.shouldStart()) {
-			return false;
-		}
+		return this.worker.store[RESOURCE_ENERGY] > 0 && super.shouldStart();
+	}
 
-		if (this.worker.store[RESOURCE_ENERGY] === 0) {
-			return false;
-		}
-
-		let target = this.findTarget();
-		if (target === null) {
-			return false;
-		}
-
+	protected override shouldStartWithTarget(target: Target): boolean {
 		return target.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
 	}
 
@@ -35,7 +26,7 @@ export default class StoreEnergyTask extends TargetingTask<Target> {
 	protected override findTarget(): Target | null {
 		return this.worker.findNearby(FIND_STRUCTURES, {
 			filter: s =>
-				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER)
+				isOneOf(s.structureType, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER, STRUCTURE_STORAGE)
 				&& (s as StructureStorage).store.getFreeCapacity(RESOURCE_ENERGY) > 5,
 		}) as Target;
 	}

@@ -19,3 +19,12 @@ export function randomSelect<T>(options: T[]): T {
 export function isInsideRoom(pos: RoomPosition) {
 	return pos.x > 2 && pos.x < 48 && pos.y > 2 && pos.y < 48;
 }
+
+export function shuffle<T>(array: T[]): T[] {
+	for (let i = array.length - 1; i > 0; i--) {
+		let j = Math.floor(Math.random() * (i + 1));
+
+		[array[i], array[j]] = [array[j], array[i]]
+	}
+	return array;
+}

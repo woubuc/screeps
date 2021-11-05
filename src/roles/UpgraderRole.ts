@@ -9,6 +9,7 @@ import Role from './Role';
  */
 class UpgraderRole extends Role {
 	public readonly icon = '⏫';
+	public readonly colour = '#F0ABFC';
 
 	public readonly body = [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE];
 	public readonly tasks = [RenewTask, UpgradeTask, LoadEnergyTask, HarvestTask];

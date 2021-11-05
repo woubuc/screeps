@@ -1,6 +1,6 @@
-import Task from './Task';
+import TargetingTask from './TargetingTask';
 
-export default class RenewTask extends Task {
+export default class RenewTask extends TargetingTask<StructureSpawn> {
 	public override readonly say = '⚡ Renew';
 
 	public override shouldStart(): boolean {
@@ -12,23 +12,27 @@ export default class RenewTask extends Task {
 			return false;
 		}
 
+
 		if (this.state.workers.count(this.worker.role) > this.state.spawns.requiredFor(this.worker.role)) {
 			return false;
 		}
 
-		return this.worker.creep.ticksToLive < 250;
+		return super.shouldStart() && this.worker.creep.ticksToLive < 250;
 	}
 
-	public override run(): void {
-		let spawn = this.worker.findNearby(FIND_MY_SPAWNS);
-		if (spawn == null) {
-			spawn = Game.spawns['Spawn1'];
-		}
-
-		if (spawn.renewCreep(this.worker.creep) === ERR_NOT_IN_RANGE) {
-			this.worker.moveTo(spawn);
-		} else {
-			this.nextTask();
-		}
+	protected tryRun(target: StructureSpawn): ScreepsReturnCode {
+		return target.renewCreep(this.worker.creep);
 	}
+
+	protected shouldStop(target: StructureSpawn, result: ScreepsReturnCode): boolean {
+		return result === ERR_FULL;
+	}
+
+
+	protected findTarget(): StructureSpawn | null {
+		return this.worker.findNearby(FIND_MY_SPAWNS, {
+			filter: s => s.spawning == null,
+		});
+	}
+
 }

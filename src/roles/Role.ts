@@ -13,6 +13,7 @@ export default abstract class Role {
 	}
 
 	public abstract readonly icon: string;
+	public abstract readonly colour: string;
 
 	public abstract readonly tasks: TaskConstructor[];
 	public abstract readonly body: BodyPartConstant[];

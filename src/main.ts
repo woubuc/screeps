@@ -1,5 +1,6 @@
 import BuilderRole from './roles/BuilderRole';
 import EnergyResupplierRole from './roles/EnergyResupplierRole';
+import RoadBuilderRole from './roles/RoadBuilderRole';
 import UpgraderRole from './roles/UpgraderRole';
 import State from './State';
 
@@ -18,8 +19,9 @@ module.exports.loop = function () {
 
 	// Hardcoded spawn limits
 	state.spawns.requireRole(UpgraderRole, 4);
-	state.spawns.requireRole(BuilderRole, 3);
-	state.spawns.requireRole(EnergyResupplierRole, state.rooms.visible.length + 1);
+	state.spawns.requireRole(RoadBuilderRole, 2);
+	state.spawns.requireRole(BuilderRole, 4);
+	state.spawns.requireRole(EnergyResupplierRole, state.rooms.visible.length);
 
 	// TODO figure out what to do about tower
 	for (let room of Object.values(Game.rooms)) {

@@ -3,6 +3,7 @@ import EnergyHaulerRole from '../roles/EnergyHaulerRole';
 import EnergyResupplierRole from '../roles/EnergyResupplierRole';
 import GuardRole from '../roles/GuardRole';
 import HarvesterRole from '../roles/HarvesterRole';
+import RoadBuilderRole from '../roles/RoadBuilderRole';
 import Role from '../roles/Role';
 import UpgraderRole from '../roles/UpgraderRole';
 import { CountMap } from '../utils/CountMap';
@@ -17,6 +18,7 @@ export default class SpawnService extends Service {
 		BuilderRole,
 		EnergyResupplierRole,
 		GuardRole,
+		RoadBuilderRole,
 	];
 
 	private requiredPerRole = new CountMap<Role>();

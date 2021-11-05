@@ -1,4 +1,5 @@
 import GuardRole from '../roles/GuardRole';
+import { shuffle } from '../utils';
 import { CountMap } from '../utils/CountMap';
 import Worker from '../Worker';
 import Service from './Service';
@@ -16,11 +17,11 @@ export default class RoomsService extends Service {
 	private stationed = new CountMap<string>();
 
 	/**
-	 * An iterable list of the accessible rooms
+	 * A list of the accessible rooms
+	 *
+	 * This list is shuffled to randomise the order in which visible rooms are accessed
 	 */
-	public get visible(): Room[] {
-		return Object.values(Game.rooms);
-	}
+	public readonly visible: Room[] = Object.values(Game.rooms);
 
 	public get owned(): Room[] {
 		return this.visible.filter(r => r.controller?.my);

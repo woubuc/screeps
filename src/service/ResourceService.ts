@@ -49,10 +49,31 @@ export default class ResourceService extends Service {
 		delete worker.creep.memory.resource;
 	}
 
+	/**
+	 * Gets the unreserved amount of a resource
+	 */
 	public unreservedAmount(resource: Resource): number {
 		let reserved = this.reserved.get(resource.id);
 		return resource.amount - reserved;
 	}
+
+	/**
+	 * Gets the energy resource with the highest unclaimed amount in any visible room
+	 */
+	public getLargestEnergyResource(): Resource<RESOURCE_ENERGY> | null {
+		let options: Resource<RESOURCE_ENERGY>[] = [];
+		for (let room of this.state.rooms.visible) {
+			let energyResources = room.find(FIND_DROPPED_RESOURCES, {
+				filter: r => r.resourceType === RESOURCE_ENERGY,
+			}) as Resource<RESOURCE_ENERGY>[];
+
+			options.push(...energyResources);
+		}
+
+		options.sort((a, b) => this.unreservedAmount(a) - this.unreservedAmount(b));
+		return options[0];
+	}
+
 
 	public override onInit(): void {
 		for (let worker of this.state.workers.all()) {
