@@ -8,16 +8,16 @@ import UpgraderRole from '../roles/UpgraderRole';
 import { CountMap } from '../utils/CountMap';
 import Service from './Service';
 
-const SPAWN_ORDER: Role[] = [
-	HarvesterRole,
-	EnergyHaulerRole,
-	UpgraderRole,
-	BuilderRole,
-	EnergyResupplierRole,
-	GuardRole,
-];
-
 export default class SpawnService extends Service {
+
+	private static readonly SPAWN_ORDER: Role[] = [
+		HarvesterRole,
+		EnergyHaulerRole,
+		UpgraderRole,
+		BuilderRole,
+		EnergyResupplierRole,
+		GuardRole,
+	];
 
 	private requiredPerRole = new CountMap<Role>();
 
@@ -70,7 +70,25 @@ export default class SpawnService extends Service {
 	}
 
 	private trySpawn() {
-		for (let role of SPAWN_ORDER) {
+		if (Game.spawns['Spawn1'].spawning != null) {
+			return;
+		}
+
+		// First, try to spawn 1 of each required role to try and ensure a minimum activity for each role
+		for (let role of SpawnService.SPAWN_ORDER) {
+			// Don't spawn yet if there are already workers with this role out there
+			if (this.state.workers.count(role) > 0) {
+				continue;
+			}
+
+			if (!this.trySpawnCreep(role)) {
+				console.log('[Spawn] Cannot spawn minimum', role.name);
+				return;
+			}
+		}
+
+		// Then spawn the actual required numbers
+		for (let role of SpawnService.SPAWN_ORDER) {
 			let amountNeeded = this.requiredFor(role) - this.state.workers.count(role);
 			if (amountNeeded <= 0) {
 				continue;
