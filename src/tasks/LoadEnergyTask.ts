@@ -24,9 +24,9 @@ export default class LoadEnergyTask extends Task {
 	}
 
 	protected findEnergyStorage(): StructureStorage | null {
-		return this.worker.findNearby(FIND_MY_STRUCTURES, {
+		return this.worker.findNearby(FIND_STRUCTURES, {
 			filter: (s) =>
-				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION)
+				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER)
 				&& (s as StructureSpawn | StructureExtension).store[RESOURCE_ENERGY] > 5,
 		});
 	}

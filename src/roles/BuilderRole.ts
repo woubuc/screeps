@@ -1,5 +1,6 @@
 import BuildImportantBuildingsTask from '../tasks/BuildImportantBuildingsTask';
 import BuildTask from '../tasks/BuildTask';
+import LoadEnergyFromContainerTask from '../tasks/LoadEnergyFromContainerTask';
 import LoadEnergyTask from '../tasks/LoadEnergyTask';
 import PickupEnergyTask from '../tasks/PickupEnergyTask';
 import RenewTask from '../tasks/RenewTask';

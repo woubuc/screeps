@@ -3,11 +3,6 @@ import Worker from '../Worker';
 import Service from './Service';
 
 /**
- * Don't make creeps run for amounts less than this
- */
-const CUTOFF: number = 20;
-
-/**
  * Manages the available dropped resources to help prevent creeps wasting running for the same item
  *
  * When a creep reserves a resource, its entire carry capacity is reserved. This means that the reservation will still cover any additional resources added while the creep is still on its way (e.g. from a harvester) as long as the total amount does not exceed the total reserved carry capacity.
@@ -22,7 +17,7 @@ export default class ResourceService extends Service {
 	 * True if the given resource can be reserved by a worker
 	 */
 	public canReserve(resource: Resource): boolean {
-		return this.reserved.get(resource.id) < resource.amount - CUTOFF;
+		return this.reserved.get(resource.id) < resource.amount;
 	}
 
 	/**
@@ -52,6 +47,11 @@ export default class ResourceService extends Service {
 			this.reserved.decrement(resourceId, amount);
 		}
 		delete worker.creep.memory.resource;
+	}
+
+	public unreservedAmount(resource: Resource): number {
+		let reserved = this.reserved.get(resource.id);
+		return resource.amount - reserved;
 	}
 
 	public override onInit(): void {

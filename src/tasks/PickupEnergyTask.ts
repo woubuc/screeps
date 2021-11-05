@@ -34,21 +34,11 @@ export default class PickupEnergyTask extends TargetingTask<Resource> {
 		let fullTarget = this.worker.findNearby(FIND_DROPPED_RESOURCES, {
 			filter: (r) =>
 				r.resourceType === RESOURCE_ENERGY
-				&& r.amount >= this.worker.store.getFreeCapacity(RESOURCE_ENERGY)
+				&& this.state.resources.unreservedAmount(r) >= this.worker.store.getFreeCapacity(RESOURCE_ENERGY)
 				&& this.state.resources.canReserve(r),
 		});
 		if (fullTarget != null) {
 			return fullTarget;
-		}
-
-		let semiTarget = this.worker.findNearby(FIND_DROPPED_RESOURCES, {
-			filter: (r) =>
-				r.resourceType === RESOURCE_ENERGY
-				&& r.amount >= 50
-				&& this.state.resources.canReserve(r),
-		});
-		if (semiTarget != null) {
-			return semiTarget;
 		}
 
 		return this.worker.findNearby(FIND_DROPPED_RESOURCES, {

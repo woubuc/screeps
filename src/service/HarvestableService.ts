@@ -17,7 +17,7 @@ const MINERS_PER_HARVESTABLE: number = 2;
 /**
  * Number of haulers spawned for each harvestable
  */
-const HAULERS_PER_HARVESTABLE: number = 4;
+const HAULERS_PER_HARVESTABLE: number = 3;
 
 /**
  * Manages assigning creeps to harvestable items in the game
