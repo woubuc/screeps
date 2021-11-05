@@ -18,8 +18,8 @@ module.exports.loop = function () {
 
 	// Hardcoded spawn limits
 	state.spawns.requireRole(UpgraderRole, 4);
-	state.spawns.requireRole(BuilderRole, 2);
-	state.spawns.requireRole(EnergyResupplierRole, 3);
+	state.spawns.requireRole(BuilderRole, 3);
+	state.spawns.requireRole(EnergyResupplierRole, 2);
 
 	// TODO figure out what to do about tower
 	for (let room of Object.values(Game.rooms)) {
