@@ -1,12 +1,14 @@
 import Task from './Task';
 
 export default class RenewTask extends Task {
+	public override readonly say = '⚡ Renew';
+
 	public override shouldStart(): boolean {
 		if (this.worker.creep.ticksToLive == undefined) {
 			return false;
 		}
 
-		if (!this.worker.hasRoleBody) {
+		if (this.worker.hasDeprecatedBody) {
 			return false;
 		}
 
@@ -17,12 +19,8 @@ export default class RenewTask extends Task {
 		return this.worker.creep.ticksToLive < 200;
 	}
 
-	public override onStart(): void {
-		this.worker.creep.say('🪫 Renew');
-	}
-
 	public override run(): void {
-		let spawn = this.worker.pos.findClosestByPath(FIND_MY_SPAWNS);
+		let spawn = this.worker.findNearby(FIND_MY_SPAWNS);
 		if (spawn == null) {
 			spawn = Game.spawns['Spawn1'];
 		}

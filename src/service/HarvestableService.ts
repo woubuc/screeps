@@ -1,5 +1,5 @@
 import HarvesterRole from '../roles/HarvesterRole';
-import LocalEnergyHaulerRole from '../roles/LocalEnergyHaulerRole';
+import LocalEnergyHaulerRole from '../roles/EnergyHaulerRole';
 import { CountMap } from '../utils/CountMap';
 import Worker from '../Worker';
 import Service from './Service';
@@ -56,9 +56,9 @@ export default class HarvestableService extends Service {
 
 			harvestable.room.visual.text(
 				`⛏️ ${ count }/${ MAX_WORKERS_PER_HARVESTABLE }`,
-				harvestable.pos.x + 1,
+				harvestable.pos.x + 0.25,
 				harvestable.pos.y,
-				{ align: 'left', opacity: 0.5 },
+				{ align: 'left', opacity: 0.75, font: 0.5 },
 			);
 		}
 	}
@@ -86,6 +86,10 @@ export default class HarvestableService extends Service {
 		return this.assignNextAvailableHarvestable(worker);
 	}
 
+	public clearHarvestable(worker: Worker): void {
+		delete worker.creep.memory.harvestable;
+	}
+
 	private getAssignedHarvestable(worker: Worker): Source | Mineral | Deposit | null {
 		let id = worker.memory.harvestable;
 		if (id == undefined) {
@@ -96,14 +100,16 @@ export default class HarvestableService extends Service {
 	}
 
 	private assignNextAvailableHarvestable(worker: Worker): Source | Mineral | Deposit | null {
-		for (let [id, count] of this.reserved.entries()) {
-			if (count < MAX_WORKERS_PER_HARVESTABLE) {
-				worker.memory.harvestable = id;
-				this.reserved.increment(id);
-				return Game.getObjectById(id);
-			}
+		let harvestable = worker.findNearby(FIND_SOURCES, {
+			filter: s => this.reserved.get(s.id) < MAX_WORKERS_PER_HARVESTABLE,
+		});
+
+		if (harvestable == null) {
+			return null;
 		}
 
-		return null;
+		worker.memory.harvestable = harvestable.id;
+		this.reserved.increment(harvestable.id);
+		return harvestable;
 	}
 }

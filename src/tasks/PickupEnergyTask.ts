@@ -1,47 +1,60 @@
-import Task from './Task';
+import TargetingTask from './TargetingTask';
 
-export default class PickupEnergyTask extends Task {
+export default class PickupEnergyTask extends TargetingTask<Resource> {
+	public override readonly say = '🔋 Pickup';
+
 	public override shouldStart(): boolean {
-		return this.worker.canStore(RESOURCE_ENERGY)
-			&& this.findEnergyResource() != null;
+		return this.worker.canStore(RESOURCE_ENERGY) && super.shouldStart();
 	}
 
-	public override onStart(): void {
-		this.worker.creep.say('🔋 Pickup');
+	protected override afterStart(target: Resource): void {
+		this.state.resources.reserve(target, this.worker,this.worker.store.getFreeCapacity(RESOURCE_ENERGY));
+		this.worker.memory.storeCapacityCache = this.worker.store.getUsedCapacity(RESOURCE_ENERGY);
 	}
 
-	public override run(): void {
-		let target = this.findEnergyResource();
-		if (target == null) {
-			return this.nextTask();
-		}
+	protected override beforeEnd(): void {
+		let previous = this.worker.memory.storeCapacityCache ?? 0;
+		let current = this.worker.store.getUsedCapacity(RESOURCE_ENERGY);
 
-		if (this.worker.creep.pickup(target) === ERR_NOT_IN_RANGE) {
-			this.worker.moveTo(target);
-		}
-
-		if (this.worker.store.getFreeCapacity() === 0 || target.amount <= 0) {
-			return this.nextTask();
+		let diff = current - previous;
+		if (diff > 0) {
+			this.state.resources.unreserve(this.targetId!, this.worker, diff);
 		}
 	}
 
-	protected findEnergyResource(): Resource | null {
-		let fullTarget = this.worker.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-			filter: (r) => r.resourceType === RESOURCE_ENERGY && r.amount >= this.worker.store.getFreeCapacity(RESOURCE_ENERGY),
+	protected tryRun(target: Resource): ScreepsReturnCode {
+		return this.worker.creep.pickup(target);
+	}
+
+	protected shouldStop(target: Resource): boolean {
+		return this.worker.store.getFreeCapacity() === 0 || target.amount <= 0;
+	}
+
+	protected findTarget(): Resource | null {
+		let fullTarget = this.worker.findNearby(FIND_DROPPED_RESOURCES, {
+			filter: (r) =>
+				r.resourceType === RESOURCE_ENERGY
+				&& r.amount >= this.worker.store.getFreeCapacity(RESOURCE_ENERGY)
+				&& this.state.resources.canReserve(r),
 		});
 		if (fullTarget != null) {
 			return fullTarget;
 		}
 
-		let semiTarget = this.worker.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-			filter: (r) => r.resourceType === RESOURCE_ENERGY && r.amount >= 50,
+		let semiTarget = this.worker.findNearby(FIND_DROPPED_RESOURCES, {
+			filter: (r) =>
+				r.resourceType === RESOURCE_ENERGY
+				&& r.amount >= 50
+				&& this.state.resources.canReserve(r),
 		});
 		if (semiTarget != null) {
 			return semiTarget;
 		}
 
-		return this.worker.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-			filter: (r) => r.resourceType === RESOURCE_ENERGY && r.amount >= 20,
+		return this.worker.findNearby(FIND_DROPPED_RESOURCES, {
+			filter: (r) =>
+				r.resourceType === RESOURCE_ENERGY
+				&& this.state.resources.canReserve(r),
 		});
 	}
 }

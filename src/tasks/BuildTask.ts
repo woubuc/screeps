@@ -2,13 +2,10 @@ import { isOneOf } from '../utils';
 import Task from './Task';
 
 export default class BuildTask extends Task {
+	public override readonly say = '🚧 build';
 	public override shouldStart(): boolean {
 		return this.worker.store.getFreeCapacity() === 0
 			&& this.findConstruction() != null;
-	}
-
-	public override onStart(): void {
-		this.worker.creep.say('🚧 build');
 	}
 
 	public override run(): void {
@@ -27,6 +24,6 @@ export default class BuildTask extends Task {
 	}
 
 	protected findConstruction(): ConstructionSite | null {
-		return this.worker.pos.findClosestByPath(FIND_CONSTRUCTION_SITES) ?? null;
+		return this.worker.findNearby(FIND_CONSTRUCTION_SITES) ?? null;
 	}
 }

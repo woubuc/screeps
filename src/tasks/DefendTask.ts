@@ -1,12 +1,10 @@
 import Task from './Task';
 
 export default class DefendTask extends Task {
+	public override readonly say = '🛡️ Defend';
+
 	public override shouldStart(): boolean {
 		return this.worker.room.find(FIND_HOSTILE_CREEPS).length > 0;
-	}
-
-	public override onStart(): void {
-		this.worker.creep.say('🛡️ Defend');
 	}
 
 	public override run(): void {

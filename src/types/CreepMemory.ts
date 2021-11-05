@@ -6,11 +6,13 @@ declare global {
 		role: RoleId;
 		currentTask?: string;
 
-		reservedSourceId?: Id<Source>;
-		targetRoom?: string;
-		taskTarget?: RoomPosition;
+		taskTarget?: Id<any>;
 		taskCountdown?: number;
 
+		targetRoom?: string;
+
 		harvestable?: Id<Harvestable>;
+		resource?: { res: Id<Resource>, amount: number };
+		storeCapacityCache?: number;
 	}
 }

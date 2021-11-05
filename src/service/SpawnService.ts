@@ -1,7 +1,22 @@
+import BuilderRole from '../roles/BuilderRole';
+import EnergyHaulerRole from '../roles/EnergyHaulerRole';
+import EnergyResupplierRole from '../roles/EnergyResupplierRole';
+import GuardRole from '../roles/GuardRole';
+import HarvesterRole from '../roles/HarvesterRole';
 import Role from '../roles/Role';
+import UpgraderRole from '../roles/UpgraderRole';
 import State from '../State';
 import { CountMap } from '../utils/CountMap';
 import Service from './Service';
+
+const SPAWN_ORDER: Role[] = [
+	HarvesterRole,
+	UpgraderRole,
+	EnergyHaulerRole,
+	BuilderRole,
+	EnergyResupplierRole,
+	GuardRole,
+]
 
 export default class SpawnService extends Service {
 
@@ -22,28 +37,52 @@ export default class SpawnService extends Service {
 	}
 
 	public override afterTick(): void {
-		for (let [role, amountNeeded] of this.requiredPerRole.entries()) {
-			amountNeeded -= this.state.workers.count(role);
-			if (amountNeeded <= 0) {
-				continue;
-			}
-
-			for (let i = 0; i < amountNeeded; i++) {
-				if (!this.trySpawnCreep(role)) {
-					break;
-				}
-			}
-		}
+		this.trySpawn();
 
 		for (let spawn of this.spawns) {
 			if (spawn.spawning != null) {
 				let spawningCreep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
-					`🛠️ ${ spawningCreep.memory.role }`,
-					spawn.pos.x + 1,
+					`🛠️   ${ spawningCreep.memory.role }`,
+					spawn.pos.x + 0.5,
 					spawn.pos.y,
-					{ align: 'left' },
+					{ align: 'left', font: 0.5, opacity: 0.75 },
 				);
+			}
+		}
+
+		let roles = Array.from(this.requiredPerRole.keys()).sort((a, b) => b.name.localeCompare(a.name));
+		for (let room of this.state.rooms.rooms) {
+			let y = 48.8;
+			for (let role of roles) {
+				if (role == null) {
+					continue;
+				}
+
+				let current = this.state.workers.count(role);
+				let max = this.requiredPerRole.get(role);
+
+				room.visual.text(`${ current }/${ max }    `, 1.5, y, { align: 'right', opacity: 0.75, font: 0.5 });
+				room.visual.text(role.icon, 1.5, y, { align: 'center', opacity: 0.75, font: 0.5 });
+				room.visual.text(`   ${ role.name }`, 1.5, y, { align: 'left', opacity: 0.25, font: 0.5 });
+				y -= 0.8;
+			}
+		}
+	}
+
+	private trySpawn() {
+		for (let role of SPAWN_ORDER) {
+			let amountNeeded = this.requiredFor(role) - this.state.workers.count(role);
+			if (amountNeeded <= 0) {
+				continue;
+			}
+
+			console.log('[Spawn] Trying to spawn', role.name);
+
+			for (let i = 0; i < amountNeeded; i++) {
+				if (!this.trySpawnCreep(role)) {
+					return;
+				}
 			}
 		}
 	}
@@ -58,7 +97,7 @@ export default class SpawnService extends Service {
 				continue;
 			}
 
-			let name = `${ role.id } #${ Game.time }`;
+			let name = `${ role.name } #${ Game.time }`;
 			let result = spawn.spawnCreep(role.body, name, {
 				memory: { role: role.id },
 			});

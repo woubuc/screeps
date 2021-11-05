@@ -2,12 +2,10 @@ import Task from './Task';
 import { isOneOf } from '../utils';
 
 export default class LoadEnergyTask extends Task {
+	public override readonly say = '🔋 Load';
+
 	public override shouldStart(): boolean {
 		return this.findEnergyStorage() != undefined;
-	}
-
-	public override onStart(): void {
-		this.worker.creep.say('🔋 Load');
 	}
 
 	public override run(): void {
@@ -26,12 +24,10 @@ export default class LoadEnergyTask extends Task {
 	}
 
 	protected findEnergyStorage(): StructureStorage | null {
-		return this.worker.creep
-			.pos
-			.findClosestByPath(FIND_MY_STRUCTURES, {
-				filter: (s) =>
-					isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION)
-					&& (s as StructureSpawn | StructureExtension).store[RESOURCE_ENERGY] > 5,
-			});
+		return this.worker.findNearby(FIND_MY_STRUCTURES, {
+			filter: (s) =>
+				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION)
+				&& (s as StructureSpawn | StructureExtension).store[RESOURCE_ENERGY] > 5,
+		});
 	}
 }

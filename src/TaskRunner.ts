@@ -20,7 +20,7 @@ export class TaskRunner {
 
 		let instance: Task;
 		if (CurrentTask == undefined) {
-			CurrentTask = this.nextTaskFor(worker);
+			CurrentTask = this.startNextTaskFor(worker);
 
 			if (CurrentTask == undefined) {
 				console.log(`WARN [Task] ${ worker.creep.memory.role }: No task`);
@@ -29,20 +29,19 @@ export class TaskRunner {
 			}
 
 			instance = new CurrentTask(this.state, worker);
-			instance.onStart();
+			this.onTaskStart(instance);
 			console.log(`[Task] ${ worker.creep.memory.role }: start ${ CurrentTask.name }`);
 		} else {
 			instance = new CurrentTask(this.state, worker);
 			// console.log(`[Task] ${ worker.creep.memory.role }: run ${ CurrentTask.name }`);
 		}
 
-
 		instance.invoke();
 	}
 
 	public getCurrentTaskFor(worker: Worker): TaskConstructor | undefined {
 		let taskName = worker.creep.memory.currentTask;
-		if (taskName != undefined) {
+		if (taskName != undefined && taskName.length > 0) {
 			return worker.role.tasks.find(t => t.name === taskName);
 		} else {
 			return undefined;
@@ -58,22 +57,24 @@ export class TaskRunner {
 		delete worker.creep.memory.currentTask;
 	}
 
-	public setTaskFor(worker: Worker, task: TaskConstructor): void {
-		worker.creep.memory.currentTask = task.name;
-	}
-
-	public nextTaskFor(worker: Worker): TaskConstructor | undefined {
+	public startNextTaskFor(worker: Worker): TaskConstructor | undefined {
 		this.clearTaskFor(worker);
 
 		for (let TaskClass of worker.role.tasks) {
 			let instance = new TaskClass(this.state, worker);
 			if (instance.shouldStart()) {
-				this.setTaskFor(worker, TaskClass);
+				this.onTaskStart(instance);
 				return TaskClass;
 			}
 		}
 
 		this.clearTaskFor(worker);
 		return undefined;
+	}
+
+	private onTaskStart(task: Task): void {
+		task.worker.memory.currentTask = task.constructor.name;
+		task.worker.creep.say(task.say);
+		task.onStart();
 	}
 }

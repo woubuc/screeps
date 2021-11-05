@@ -7,8 +7,8 @@ export type TaskConstructor = Constructor<Task, [State, Worker]>;
 
 export default abstract class Task {
 	public constructor(
-		protected readonly state: State,
-		protected readonly worker: Worker,
+		public readonly state: State,
+		public readonly worker: Worker,
 	) {}
 
 	/**
@@ -17,6 +17,8 @@ export default abstract class Task {
 	 * continue down the chain to the next task.
 	 */
 	public abstract shouldStart(): boolean;
+
+	public abstract readonly say: string;
 
 	/**
 	 * Called once when the worker starts this task
@@ -40,6 +42,6 @@ export default abstract class Task {
 	}
 
 	protected nextTask() {
-		this.state.taskRunner.nextTaskFor(this.worker);
+		this.state.taskRunner.startNextTaskFor(this.worker);
 	}
 }

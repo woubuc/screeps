@@ -1,6 +1,9 @@
+import { randomSelect } from '../utils';
 import Task from './Task';
 
 export default class RoamTask extends Task {
+	public override readonly say = '🔀 Roam';
+
 	public override shouldStart(): boolean {
 		return true;
 	}
@@ -11,15 +14,34 @@ export default class RoamTask extends Task {
 	}
 
 	private getRandomDirection(): DirectionConstant {
-		switch (Math.floor(Math.random() * 8)) {
-			case 0: return TOP;
-			case 1: return TOP_RIGHT;
-			case 2: return RIGHT;
-			case 3: return BOTTOM_RIGHT;
-			case 4: return BOTTOM;
-			case 5: return BOTTOM_LEFT;
-			case 6: return LEFT;
-			default: return TOP_LEFT;
+		let options: DirectionConstant[] = [];
+
+		if (this.worker.pos.x > 2) {
+			options.push(TOP);
+			if (this.worker.pos.y > 2) {
+				options.push(TOP_LEFT);
+			}
+			if (this.worker.pos.y < 48) {
+				options.push(TOP_RIGHT);
+			}
 		}
+		if (this.worker.pos.x < 48) {
+			options.push(BOTTOM);
+			if (this.worker.pos.y > 2) {
+				options.push(BOTTOM_LEFT);
+			}
+			if (this.worker.pos.y < 48) {
+				options.push(BOTTOM_RIGHT);
+			}
+		}
+
+		if (this.worker.pos.y > 2) {
+			options.push(LEFT);
+		}
+		if (this.worker.pos.y < 48) {
+			options.push(RIGHT);
+		}
+
+		return randomSelect(options);
 	}
 }

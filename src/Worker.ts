@@ -1,8 +1,8 @@
 import BuilderRole from './roles/BuilderRole';
+import EnergyHaulerRole from './roles/EnergyResupplierRole';
 import GuardRole from './roles/GuardRole';
 import HarvesterRole from './roles/HarvesterRole';
-import EnergyHaulerRole from './roles/EnergyHaulerRole';
-import LocalEnergyHaulerRole from './roles/LocalEnergyHaulerRole';
+import LocalEnergyHaulerRole from './roles/EnergyHaulerRole';
 import Role, { RoleId } from './roles/Role';
 import UnknownRole from './roles/UnknownRole';
 import UpgraderRole from './roles/UpgraderRole';
@@ -15,14 +15,17 @@ export default class Worker {
 		this.role = getRole(creep.memory.role);
 	}
 
-	public get memory(): CreepMemory { return this.creep.memory }
-	public get store(): StoreDefinition { return this.creep.store }
-	public get pos(): RoomPosition { return this.creep.pos }
-	public get room(): Room { return this.creep.room }
+	public get memory(): CreepMemory { return this.creep.memory; }
 
-	public get hasRoleBody(): boolean {
-		return this.creep.body.length === this.role.body.length
-			&& this.creep.body.every((part, i) => this.role.body[i] === part.type);
+	public get store(): StoreDefinition { return this.creep.store; }
+
+	public get pos(): RoomPosition { return this.creep.pos; }
+
+	public get room(): Room { return this.creep.room; }
+
+	public get hasDeprecatedBody(): boolean {
+		return this.creep.body.length < this.role.body.length
+			&& this.creep.body.some((part, i) => this.role.body[i] !== part.type);
 	}
 
 	public canStore(resource: ResourceConstant): boolean {
@@ -43,6 +46,43 @@ export default class Worker {
 				opacity: 0.35,
 			},
 		});
+	}
+
+	public findNearby<K extends FindConstant, S extends FindTypes[K]>(
+		target: K,
+		options?: FindPathOpts & Partial<FilterOptions<K, S>> & { algorithm?: FindClosestByPathAlgorithm },
+	): S | null {
+		let found = this.pos.findClosestByPath(target, options);
+		if (found != null) {
+			return found;
+		}
+
+		let tryRooms: string[] = [this.pos.roomName];
+		let visitedRooms: string[] = [];
+
+		while (tryRooms.length > 0) {
+			let name = tryRooms.shift()!;
+			visitedRooms.push(name);
+
+			let room = Game.rooms[name];
+			if (room == undefined) {
+				continue;
+			}
+
+			let found = room.find(target, options?.filter ? { filter: options.filter } : undefined);
+			if (found.length > 0) {
+				return found[0];
+			}
+
+			let adjacentRooms = Game.map.describeExits(name);
+			for (let name of Object.values(adjacentRooms)) {
+				if (!visitedRooms.includes(name)) {
+					tryRooms.push(name);
+				}
+			}
+		}
+
+		return null;
 	}
 }
 

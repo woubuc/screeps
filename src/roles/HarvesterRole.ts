@@ -7,7 +7,7 @@ class HarvesterRole extends Role {
 	public readonly icon = '⛏️';
 
 	public readonly body = [WORK, WORK, MOVE];
-	public readonly tasks = [RenewTask, HarvestTask, StoreEnergyTask];
+	public readonly tasks = [HarvestTask, StoreEnergyTask];
 }
 
 export default new HarvesterRole();

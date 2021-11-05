@@ -1,8 +1,6 @@
+import { CountMap } from '../utils/CountMap';
+import Worker from '../Worker';
 import Service from './Service';
-
-export interface ResourceServiceData {
-	reservedAmounts: Record<Id<Resource>, number>;
-}
 
 /**
  * Don't make creeps run for amounts less than this
@@ -11,38 +9,53 @@ const CUTOFF = 20;
 
 export default class ResourceService extends Service {
 
-	private data: ResourceServiceData = Memory.resourceService ?? {
-		reservedAmounts: {},
-	};
+	private reserved = new CountMap<Id<Resource>>();
 
-	public canReserve(resource: Resource): boolean {
-		let alreadyReserved = this.data.reservedAmounts[resource.id] ?? 0;
-		return alreadyReserved < resource.amount - CUTOFF;
+	public override onInit(): void {
+		for (let worker of this.state.workers.all()) {
+			let reserved = worker.memory.resource;
+			if (reserved != undefined) {
+				this.reserved.increment(reserved.res, reserved.amount);
+			}
+		}
 	}
 
-	public reserve(resource: Resource, amount: number): boolean {
+	public canReserve(resource: Resource): boolean {
+		return this.reserved.get(resource.id) < resource.amount - CUTOFF;
+	}
+
+	public reserve(resource: Resource, worker: Worker, amount: number): boolean {
 		if (!this.canReserve(resource)) {
 			return false;
 		}
 
-		if (this.data.reservedAmounts[resource.id] == undefined) {
-			this.data.reservedAmounts[resource.id] = amount;
-		} else {
-			this.data.reservedAmounts[resource.id] += amount;
-		}
+		this.reserved.increment(resource.id, amount);
+		worker.memory.resource = { res: resource.id, amount };
 		return true;
 	}
 
-	public unreserve(resource: Resource, amount: number): void {
-		let alreadyReserved = this.data.reservedAmounts[resource.id] ?? 0;
-		if (alreadyReserved <= amount) {
-			delete this.data.reservedAmounts[resource.id];
+	public unreserve(resourceId: Id<Resource>, worker: Worker, amount: number): void {
+		if (this.reserved.get(resourceId) <= amount) {
+			this.reserved.delete(resourceId);
 		} else {
-			this.data.reservedAmounts[resource.id] -= amount;
+			this.reserved.decrement(resourceId, amount);
 		}
+		delete worker.creep.memory.resource;
 	}
 
 	public override afterTick(): void {
-		Memory.resourceService = this.data;
+		for (let [id, reserved] of this.reserved.entries()) {
+			let resource = Game.getObjectById(id);
+			if (resource == null || resource.room == undefined) {
+				continue;
+			}
+
+			resource.room.visual.text(
+				`🛑 ${ reserved }/${ resource.amount }`,
+				resource.pos.x,
+				resource.pos.y - 0.5,
+				{ align: 'center', font: 0.25 },
+			);
+		}
 	}
 }

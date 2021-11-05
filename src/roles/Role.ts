@@ -8,6 +8,10 @@ export default abstract class Role {
 		return this.constructor.name as RoleId;
 	}
 
+	public get name(): string {
+		return this.id.replace('Role', '');
+	}
+
 	public abstract readonly icon: string;
 
 	public abstract readonly tasks: TaskConstructor[];

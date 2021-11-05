@@ -1,12 +1,9 @@
 import Task from './Task';
 
 export default class UpgradeTask extends Task {
+	public override readonly say = '⏫ Upgrade';
 	public override shouldStart(): boolean {
 		return this.worker.contains(RESOURCE_ENERGY);
-	}
-
-	public override onStart(): void {
-		this.worker.creep.say('⚡ Upgrade');
 	}
 
 	public override run(): void {

@@ -1,27 +1,23 @@
-import Task from './Task';
+import TargetingTask from './TargetingTask';
 
-export default class RepairTask extends Task {
+export default class RepairTask extends TargetingTask<OwnedStructure> {
+	public override readonly say = '🚧 repair';
+
 	public override shouldStart(): boolean {
-		return this.worker.creep.store.getFreeCapacity() === 0
-			&& this.worker.creep.room.find(FIND_MY_STRUCTURES, { filter: s => s.hits < s.hitsMax }).length > 0;
+		return super.shouldStart() && this.worker.store.getFreeCapacity() === 0;
 	}
 
-	public override onStart(): void {
-		this.worker.creep.say('🚧 build');
+	protected tryRun(target: OwnedStructure): ScreepsReturnCode {
+		return this.worker.creep.repair(target);
 	}
 
-	public override run(): void {
-		let target = this.worker.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, { filter: s => s.hits < s.hitsMax });
-		if (target == undefined) {
-			return this.nextTask();
-		}
+	protected shouldStop(target: OwnedStructure): boolean {
+		return this.worker.creep.store[RESOURCE_ENERGY] === 0;
+	}
 
-		if (this.worker.creep.repair(target) === ERR_NOT_IN_RANGE) {
-			this.worker.moveTo(target);
-		}
-
-		if (this.worker.creep.store[RESOURCE_ENERGY] === 0) {
-			return this.nextTask();
-		}
+	protected findTarget(): OwnedStructure | null {
+		return this.worker.findNearby(FIND_MY_STRUCTURES, {
+			filter: s => s.hits < s.hitsMax,
+		});
 	}
 }
