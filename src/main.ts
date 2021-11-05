@@ -17,7 +17,7 @@ module.exports.loop = function () {
 	state.taskRunner.run();
 
 	// Hardcoded spawn limits
-	state.spawns.requireRole(UpgraderRole, 3);
+	state.spawns.requireRole(UpgraderRole, 4);
 	state.spawns.requireRole(BuilderRole, 2);
 	state.spawns.requireRole(EnergyResupplierRole, 3);
 
