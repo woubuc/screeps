@@ -14,6 +14,7 @@ declare global {
 
 		harvestable?: Id<Harvestable>;
 		resource?: { res: Id<Resource>, amount: number };
+
 		storeCapacityCache?: number;
 	}
 }

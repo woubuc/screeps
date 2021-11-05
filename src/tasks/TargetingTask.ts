@@ -12,13 +12,12 @@ export default abstract class TargetingTask<T extends RoomObject & { id: Id<T> }
 		}
 
 		this.worker.memory.taskTarget = target.id;
-
 		this.afterStart(target);
 	}
 
 	public override onEnd(): void {
 		this.beforeEnd();
-		delete this.worker.memory.taskTarget;
+		this.worker.memory.taskTarget = undefined;
 	}
 
 	protected get targetId(): Id<T> | null {
