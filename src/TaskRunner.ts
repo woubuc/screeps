@@ -1,4 +1,5 @@
 import State from './State';
+import RecycleTask from './tasks/RecycleTask';
 import Task, { TaskConstructor } from './tasks/Task';
 import Worker from './Worker';
 
@@ -41,6 +42,10 @@ export class TaskRunner {
 
 	public getCurrentTaskFor(worker: Worker): TaskConstructor | undefined {
 		let taskName = worker.creep.memory.currentTask;
+		if (taskName === 'RecycleTask') {
+			return RecycleTask;
+		}
+
 		if (taskName != undefined && taskName.length > 0) {
 			return worker.role.tasks.find(t => t.name === taskName);
 		} else {

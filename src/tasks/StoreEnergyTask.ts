@@ -35,7 +35,7 @@ export default class StoreEnergyTask extends TargetingTask<Target> {
 	protected override findTarget(): Target | null {
 		return this.worker.findNearby(FIND_MY_STRUCTURES, {
 			filter: s =>
-				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_CONTAINER)
+				isOneOf(s.structureType, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER)
 				&& (s as StructureStorage).store.getFreeCapacity(RESOURCE_ENERGY) > 5,
 		}) as Target;
 	}

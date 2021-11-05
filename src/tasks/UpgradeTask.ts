@@ -7,8 +7,11 @@ export default class UpgradeTask extends Task {
 	}
 
 	public override run(): void {
-		let controller = this.worker.creep.room.controller;
-		if (controller == undefined) {
+		let controller = this.worker.findNearby(FIND_MY_STRUCTURES, {
+			filter: s => s.structureType === STRUCTURE_CONTROLLER && s.my,
+		}) as StructureController;
+
+		if (controller == null) {
 			return this.nextTask();
 		}
 

@@ -11,7 +11,12 @@ class BuilderRole extends Role {
 	public readonly icon = '👷';
 
 	public readonly body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
-	public readonly tasks = [RenewTask, BuildImportantBuildingsTask, RepairTask, BuildTask, PickupEnergyTask, LoadEnergyTask, RoamTask];
+	public readonly tasks = [
+		RenewTask,
+		BuildImportantBuildingsTask, BuildTask, RepairTask,
+		PickupEnergyTask, LoadEnergyTask,
+		RoamTask,
+	];
 }
 
 export default new BuilderRole();

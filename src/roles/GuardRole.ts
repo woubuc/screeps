@@ -1,7 +1,5 @@
 import DefendTask from '../tasks/DefendTask';
-import RecycleTask from '../tasks/RecycleTask';
 import RenewTask from '../tasks/RenewTask';
-import ReturnToSpawnTask from '../tasks/ReturnToSpawnTask';
 import RoamTask from '../tasks/RoamTask';
 import StationInRoomTask from '../tasks/StationInRoomTask';
 import Role from './Role';

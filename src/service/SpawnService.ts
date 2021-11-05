@@ -5,18 +5,17 @@ import GuardRole from '../roles/GuardRole';
 import HarvesterRole from '../roles/HarvesterRole';
 import Role from '../roles/Role';
 import UpgraderRole from '../roles/UpgraderRole';
-import State from '../State';
 import { CountMap } from '../utils/CountMap';
 import Service from './Service';
 
 const SPAWN_ORDER: Role[] = [
 	HarvesterRole,
-	UpgraderRole,
 	EnergyHaulerRole,
+	UpgraderRole,
 	BuilderRole,
 	EnergyResupplierRole,
 	GuardRole,
-]
+];
 
 export default class SpawnService extends Service {
 
@@ -43,8 +42,8 @@ export default class SpawnService extends Service {
 			if (spawn.spawning != null) {
 				let spawningCreep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
-					`🛠️   ${ spawningCreep.memory.role }`,
-					spawn.pos.x + 0.5,
+					`🏭 ${ spawningCreep.name }`,
+					spawn.pos.x + 0.6,
 					spawn.pos.y,
 					{ align: 'left', font: 0.5, opacity: 0.75 },
 				);
@@ -77,10 +76,9 @@ export default class SpawnService extends Service {
 				continue;
 			}
 
-			console.log('[Spawn] Trying to spawn', role.name);
-
 			for (let i = 0; i < amountNeeded; i++) {
 				if (!this.trySpawnCreep(role)) {
+					console.log('[Spawn] Cannot spawn', role.name);
 					return;
 				}
 			}
@@ -88,26 +86,20 @@ export default class SpawnService extends Service {
 	}
 
 	private trySpawnCreep(role: Role): boolean {
-		for (let spawn of Object.values(Game.spawns)) {
-			if (!spawn.isActive()) {
-				continue;
-			}
-
-			if (spawn.spawning != null) {
-				continue;
-			}
-
-			let name = `${ role.name } #${ Game.time }`;
-			let result = spawn.spawnCreep(role.body, name, {
-				memory: { role: role.id },
-			});
-
-			if (result === OK) {
-				return true;
-			}
+		let spawn = Game.spawns['Spawn1'];
+		if (!spawn.isActive()) {
+			return false;
 		}
 
-		return false;
-	}
+		if (spawn.spawning != null) {
+			return false;
+		}
 
+		let name = `${ role.name } #${ Game.time }`;
+		let result = spawn.spawnCreep(role.body, name, {
+			memory: { role: role.id },
+		});
+
+		return result === OK;
+	}
 }

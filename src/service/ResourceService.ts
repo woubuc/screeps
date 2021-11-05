@@ -5,25 +5,31 @@ import Service from './Service';
 /**
  * Don't make creeps run for amounts less than this
  */
-const CUTOFF = 20;
+const CUTOFF: number = 20;
 
+/**
+ * Manages the available dropped resources to help prevent creeps wasting running for the same item
+ *
+ * When a creep reserves a resource, its entire carry capacity is reserved. This means that the reservation will still cover any additional resources added while the creep is still on its way (e.g. from a harvester) as long as the total amount does not exceed the total reserved carry capacity.
+ *
+ * Only resources with an amount that exceeds the already reserved capacity can be reserved.
+ */
 export default class ResourceService extends Service {
 
 	private reserved = new CountMap<Id<Resource>>();
 
-	public override onInit(): void {
-		for (let worker of this.state.workers.all()) {
-			let reserved = worker.memory.resource;
-			if (reserved != undefined) {
-				this.reserved.increment(reserved.res, reserved.amount);
-			}
-		}
-	}
-
+	/**
+	 * True if the given resource can be reserved by a worker
+	 */
 	public canReserve(resource: Resource): boolean {
 		return this.reserved.get(resource.id) < resource.amount - CUTOFF;
 	}
 
+	/**
+	 * Reserves a resource
+	 *
+	 * Should be called as soon as a creep starts moving towards a resource.
+	 */
 	public reserve(resource: Resource, worker: Worker, amount: number): boolean {
 		if (!this.canReserve(resource)) {
 			return false;
@@ -34,6 +40,11 @@ export default class ResourceService extends Service {
 		return true;
 	}
 
+	/**
+	 * Unreserve a resource
+	 *
+	 * Should be called after a creep has picked up (some of) the resource.
+	 */
 	public unreserve(resourceId: Id<Resource>, worker: Worker, amount: number): void {
 		if (this.reserved.get(resourceId) <= amount) {
 			this.reserved.delete(resourceId);
@@ -41,6 +52,15 @@ export default class ResourceService extends Service {
 			this.reserved.decrement(resourceId, amount);
 		}
 		delete worker.creep.memory.resource;
+	}
+
+	public override onInit(): void {
+		for (let worker of this.state.workers.all()) {
+			let reserved = worker.memory.resource;
+			if (reserved != undefined) {
+				this.reserved.increment(reserved.res, reserved.amount);
+			}
+		}
 	}
 
 	public override afterTick(): void {

@@ -1,5 +1,4 @@
 import HarvestTask from '../tasks/HarvestTask';
-import RenewTask from '../tasks/RenewTask';
 import StoreEnergyTask from '../tasks/StoreEnergyTask';
 import Role from './Role';
 

@@ -13,7 +13,7 @@ class EnergyResupplierRole extends Role {
 	public readonly body = [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
 	public readonly tasks = [
 		RenewTask,
-		StoreEnergyInSpawnTask, StoreEnergyInTowerTask, StoreEnergyTask,
+		StoreEnergyInTowerTask, StoreEnergyInSpawnTask, StoreEnergyTask,
 		PickupEnergyTask, LoadEnergyFromFullExtensionsTask,
 		RoamTask,
 	];

@@ -1,19 +1,25 @@
 import BuilderRole from './roles/BuilderRole';
 import EnergyResupplierRole from './roles/EnergyResupplierRole';
-import GuardRole from './roles/GuardRole';
 import UpgraderRole from './roles/UpgraderRole';
 import State from './State';
 
 module.exports.loop = function () {
+	// Cleanup memory of creeps that were deleted in the last tick
+	cleanupMemory();
 
+	// Initialise the global state, which contains & initialises all services
 	let state = new State();
 
+	// Run any service logic that should happen *before* the game tick
 	state.beforeTick();
+
+	// Run the creep tasks
 	state.taskRunner.run();
 
+	// Hardcoded spawn limits
 	state.spawns.requireRole(UpgraderRole, 3);
-	state.spawns.requireRole(BuilderRole, 3);
-	state.spawns.requireRole(EnergyResupplierRole, Object.keys(Game.rooms).length + 1);
+	state.spawns.requireRole(BuilderRole, 2);
+	state.spawns.requireRole(EnergyResupplierRole, state.rooms.rooms.length + 1);
 
 	// TODO figure out what to do about tower
 	for (let room of Object.values(Game.rooms)) {
@@ -32,9 +38,8 @@ module.exports.loop = function () {
 		}
 	}
 
+	// Run any logic that should happen *after* the game tick (cleanup, display,...)
 	state.afterTick();
-
-	cleanupMemory();
 };
 
 function cleanupMemory() {
