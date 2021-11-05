@@ -79,7 +79,9 @@ export class TaskRunner {
 
 	private onTaskStart(task: Task): void {
 		task.worker.memory.currentTask = task.constructor.name;
-		task.worker.creep.say(task.say);
+		if (task.say.length > 0) {
+			task.worker.creep.say(task.say);
+		}
 		task.onStart();
 	}
 }

@@ -7,6 +7,7 @@ declare global {
 		currentTask?: string;
 
 		taskTarget?: Id<any>;
+		roamTarget?: RoomPosition;
 		taskCountdown?: number;
 
 		targetRoom?: string;

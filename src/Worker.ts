@@ -36,8 +36,8 @@ export default class Worker {
 		return this.store[resource] > 0;
 	}
 
-	public moveTo(target: RoomPosition | { pos: RoomPosition }, cache: boolean = true) {
-		this.creep.moveTo(target, {
+	public moveTo(target: RoomPosition | { pos: RoomPosition }, cache: boolean = true, options: Partial<MoveToOpts> = {}): ScreepsReturnCode {
+		return this.creep.moveTo(target, {
 			reusePath: cache ? 25 : 5,
 			visualizePathStyle: {
 				lineStyle: 'dotted',
@@ -45,6 +45,7 @@ export default class Worker {
 				strokeWidth: 0.1,
 				opacity: 0.35,
 			},
+			...options,
 		});
 	}
 
@@ -52,6 +53,11 @@ export default class Worker {
 		target: K,
 		options?: FindPathOpts & Partial<FilterOptions<K, S>> & { algorithm?: FindClosestByPathAlgorithm },
 	): S | null {
+		if (options == undefined) {
+			options = {};
+		}
+		options.ignoreCreeps = true;
+
 		let found = this.pos.findClosestByPath(target, options);
 		if (found != null) {
 			return found;
@@ -69,7 +75,7 @@ export default class Worker {
 				continue;
 			}
 
-			let found = room.find(target, options?.filter ? { filter: options.filter } : undefined);
+			let found = room.find(target, options.filter ? { filter: options.filter } : undefined);
 			if (found.length > 0) {
 				return found[0];
 			}
