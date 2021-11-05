@@ -10,7 +10,7 @@ import Service from './Service';
 
 export default class SpawnService extends Service {
 
-	private static readonly SPAWN_ORDER: Role[] = [
+	private readonly SPAWN_ORDER: Role[] = [
 		HarvesterRole,
 		EnergyHaulerRole,
 		UpgraderRole,
@@ -51,7 +51,7 @@ export default class SpawnService extends Service {
 		}
 
 		let roles = Array.from(this.requiredPerRole.keys()).sort((a, b) => b.name.localeCompare(a.name));
-		for (let room of this.state.rooms.rooms) {
+		for (let room of this.state.rooms.visible) {
 			let y = 48.8;
 			for (let role of roles) {
 				if (role == null) {
@@ -75,11 +75,12 @@ export default class SpawnService extends Service {
 		}
 
 		// First, try to spawn 1 of each required role to try and ensure a minimum activity for each role
-		for (let role of SpawnService.SPAWN_ORDER) {
+		for (let role of this.SPAWN_ORDER) {
 			// Don't spawn yet if there are already workers with this role out there
 			if (this.state.workers.count(role) > 0) {
 				continue;
 			}
+
 
 			if (!this.trySpawnCreep(role)) {
 				console.log('[Spawn] Cannot spawn minimum', role.name);
@@ -88,7 +89,7 @@ export default class SpawnService extends Service {
 		}
 
 		// Then spawn the actual required numbers
-		for (let role of SpawnService.SPAWN_ORDER) {
+		for (let role of this.SPAWN_ORDER) {
 			let amountNeeded = this.requiredFor(role) - this.state.workers.count(role);
 			if (amountNeeded <= 0) {
 				continue;
