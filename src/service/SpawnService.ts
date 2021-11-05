@@ -77,7 +77,7 @@ export default class SpawnService extends Service {
 		// First, try to spawn 1 of each required role to try and ensure a minimum activity for each role
 		for (let role of this.SPAWN_ORDER) {
 			// Don't spawn yet if there are already workers with this role out there
-			if (this.state.workers.count(role) > 0) {
+			if (this.state.workers.count(role) > 0 || this.requiredFor(role) === 0 || role.optional) {
 				continue;
 			}
 
