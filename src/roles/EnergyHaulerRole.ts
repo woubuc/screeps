@@ -4,6 +4,9 @@ import RoamTask from '../tasks/RoamTask';
 import StoreEnergyTask from '../tasks/StoreEnergyTask';
 import Role from './Role';
 
+/**
+ * Energy haulers carry energy from dropped resources to the nearest store building (spawn, extension, container, storage).
+ */
 class EnergyHaulerRole extends Role {
 	public readonly icon = '📦';
 

@@ -1,5 +1,8 @@
 import Role from './Role';
 
+/**
+ * Placeholder used for invalid roles
+ */
 class UnknownRole extends Role {
 	public readonly icon = '❓';
 

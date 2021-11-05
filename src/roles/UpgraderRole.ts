@@ -4,6 +4,9 @@ import RenewTask from '../tasks/RenewTask';
 import UpgradeTask from '../tasks/UpgradeTask';
 import Role from './Role';
 
+/**
+ * Upgraders supply energy to room controllers
+ */
 class UpgraderRole extends Role {
 	public readonly icon = '⏫';
 

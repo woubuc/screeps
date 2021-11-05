@@ -1,6 +1,5 @@
 import BuildImportantBuildingsTask from '../tasks/BuildImportantBuildingsTask';
 import BuildTask from '../tasks/BuildTask';
-import LoadEnergyFromContainerTask from '../tasks/LoadEnergyFromContainerTask';
 import LoadEnergyTask from '../tasks/LoadEnergyTask';
 import PickupEnergyTask from '../tasks/PickupEnergyTask';
 import RenewTask from '../tasks/RenewTask';
@@ -8,6 +7,9 @@ import RepairTask from '../tasks/RepairTask';
 import RoamTask from '../tasks/RoamTask';
 import Role from './Role';
 
+/**
+ * Builders construct and repair buildings
+ */
 class BuilderRole extends Role {
 	public readonly icon = '👷';
 

@@ -7,6 +7,9 @@ import StoreEnergyInSpawnTask from '../tasks/StoreEnergyInSpawnTask';
 import StoreEnergyInTowerTask from '../tasks/StoreEnergyInTowerTask';
 import Role from './Role';
 
+/**
+ * Energy resuppliers take energy from containers and storage to keep spawns, extensions and towers fully stocked.
+ */
 class EnergyResupplierRole extends Role {
 	public readonly icon = '📦';
 
