@@ -10,7 +10,7 @@ import Role from './Role';
 class EnergyResupplierRole extends Role {
 	public readonly icon = '📦';
 
-	public readonly body = [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+	public readonly body = [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
 	public readonly tasks = [
 		RenewTask,
 		StoreEnergyInSpawnTask, StoreEnergyInTowerTask, StoreEnergyInExtensionTask,

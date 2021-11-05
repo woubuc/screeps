@@ -11,7 +11,7 @@ import Role from './Role';
 class BuilderRole extends Role {
 	public readonly icon = '👷';
 
-	public readonly body = [WORK, WORK, CARRY, MOVE, MOVE, MOVE];
+	public readonly body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
 	public readonly tasks = [
 		RenewTask,
 		BuildImportantBuildingsTask, BuildTask, RepairTask,
