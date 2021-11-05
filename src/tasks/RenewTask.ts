@@ -16,7 +16,7 @@ export default class RenewTask extends Task {
 			return false;
 		}
 
-		return this.worker.creep.ticksToLive < 200;
+		return this.worker.creep.ticksToLive < 250;
 	}
 
 	public override run(): void {
