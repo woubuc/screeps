@@ -18,8 +18,20 @@ export default class RoomsService extends Service {
 	/**
 	 * An iterable list of the accessible rooms
 	 */
-	public get rooms(): Room[] {
+	public get visible(): Room[] {
 		return Object.values(Game.rooms);
+	}
+
+	public get owned(): Room[] {
+		return this.visible.filter(r => r.controller?.my);
+	}
+
+	public get reserved(): Room[] {
+		return this.visible.filter(r => !r.controller?.my && r.controller?.reservation?.username === this.state.username);
+	}
+
+	public get neutral(): Room[] {
+		return this.visible.filter(r => !r.controller?.my && !r.controller?.reservation)
 	}
 
 	/**
@@ -54,7 +66,7 @@ export default class RoomsService extends Service {
 	}
 
 	public override onInit(): void {
-		for (let room of Object.values(Game.rooms)) {
+		for (let room of this.visible) {
 			this.stationed.set(room.name, 0);
 
 			if (room.controller?.my) {

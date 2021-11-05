@@ -28,7 +28,7 @@ export default class HarvestableService extends Service {
 
 	public override onInit(): void {
 		let totalHarvestables = 0;
-		for (let room of this.state.rooms.rooms) {
+		for (let room of this.state.rooms.visible) {
 			for (let source of room.find(FIND_SOURCES)) {
 				this.reserved.set(source.id, 0);
 				totalHarvestables++;
