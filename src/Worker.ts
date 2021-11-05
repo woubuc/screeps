@@ -24,8 +24,7 @@ export default class Worker {
 	public get room(): Room { return this.creep.room; }
 
 	public get hasDeprecatedBody(): boolean {
-		return this.creep.body.length < this.role.body.length
-			&& this.creep.body.some((part, i) => this.role.body[i] !== part.type);
+		return this.creep.body.length < this.role.body.length;
 	}
 
 	public canStore(resource: ResourceConstant): boolean {
